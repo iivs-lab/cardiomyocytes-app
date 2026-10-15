@@ -178,10 +178,12 @@ def render_icon(size: int) -> QImage:
         placement = _grow(placement, _measure(_paint(size, placement)), size)
         placement = _center(placement, _measure(_paint(size, placement)), size)
 
-    # Pixel snapping can leave the result a pixel too large; shrink until it fits.
+    # Pixel snapping can leave the result a pixel too large; shrink until it fits,
+    # centering again after each step so the shrinking does not drift it aside.
     image = _paint(size, placement)
     while not _fits(_measure(image), size):
         placement = replace(placement, zoom=placement.zoom * 0.998)
+        placement = _center(placement, _measure(_paint(size, placement)), size)
         image = _paint(size, placement)
     return image
 
