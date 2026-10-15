@@ -10,7 +10,7 @@ include_todo: true
 is_library: false
 license_year: 2026
 package_name: iivs_cardio_app
-project_description: ''
+project_description: A GUI application for cardiomyocyte analysis
 project_name: cardiomyocytes-app
 python_version: '3.14'
 repo_name: cardiomyocytes-app
