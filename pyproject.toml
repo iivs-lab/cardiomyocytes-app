@@ -47,20 +47,13 @@ dev = [
 ]
 
 [tool.pyside6.deploy]
-# Build with `uv run pyside6-deploy --no-install` from the project root. The generated
-# `pysidedeploy.spec` caches the detected Qt modules and plugins; it is not committed.
 title = "CardiomyocytesApp"
 input_file = "main.py"
 exec_directory = "dist"
 mode = "standalone"
 icon = "iivs_cardio_app/gui/assets/icon.ico"
-# pyside6-deploy splits this like a shell, so quote an argument holding a space.
-# - Qt Network and Qt PDF are left out, which the application does not use: the `tls`
-#   and `qpdf` plugins pull in their DLLs, and `PySide6/__init__.py` imports
-#   `QtNetwork` only when a bundled OpenSSL folder exists, which the wheels lack.
-# - `platforminputcontexts` holds the Qt Virtual Keyboard (GPLv3 only), which pulls in
-#   Qt Quick and QML; Nuitka leaves the family out by default.
-# - The package data carries every `assets/` folder in the package.
+# Split like a shell, so quote an argument holding a space. Leaves out the unused
+# Qt Network, Qt PDF, and Qt Virtual Keyboard (`platforminputcontexts`, GPLv3 only).
 extra_args = """\
     --quiet --noinclude-qt-translations --assume-yes-for-downloads \
     '--output-filename=Cardiomyocytes App' --windows-console-mode=attach \
