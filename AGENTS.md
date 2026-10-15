@@ -290,9 +290,9 @@ answers; run `copier update --UNSAFE` to pull later template changes.
 ### Build
 
 - `uv run pyside6-deploy --no-install` builds the application from
-  `[tool.pyside6.deploy]` in `pyproject.toml`; `main.py` in the
-  project root is its entry file, since pyside6-deploy reads
-  `pyproject.toml` only beside the entry file.
+  `[tool.pyside6.deploy]` in `pyproject.toml`; pyside6-deploy reads
+  that table only from the `pyproject.toml` beside its entry file,
+  which is why `main.py` stays in the project root.
 - Do not add a `[tool.pyside6-project]` table to silence the build's
   "Unable to resolve a valid project file" warning: its `files` takes
   no directories or globs, so it would have to list every source file,
@@ -320,9 +320,15 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   `cli/`). See `docs/decisions/0001-*.md` for the dependency rules
   between them: no Qt in `core/`, imports run from a front end to
   `features/` to `common/`, and sub-apps never import each other.
-- `gui/bootstrap.py` assembles and runs the application in `main()`,
-  and `gui/launcher.py` is the launcher window and nothing more.
-  `gui/__init__.py` exports `main` alone.
+- `main.py` in the project root is the one entry point, for a run from
+  the checkout (`uv run python main.py`) and for the build. It only
+  starts the process; `gui/bootstrap.py` assembles and runs the
+  application in `main()`, and `gui/launcher.py` is the launcher window
+  and nothing more. `gui/__init__.py` exports `main` alone.
+- The package has no `__main__.py`, and no module in it gets an
+  `if __name__ == "__main__":` block, which would run the module twice
+  (`docs/decisions/0002-*.md`). A later front end that needs its own
+  command gets one in its package, such as `cli/__main__.py`.
 
 ### Qt tests
 

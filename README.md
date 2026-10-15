@@ -25,7 +25,7 @@ uv sync --group dev
 Launch the application from the project root:
 
 ```bash
-uv run python -m iivs_cardio_app
+uv run python main.py
 ```
 
 To build a standalone application instead, see 🏗️ Build below.
@@ -126,7 +126,8 @@ delete `pysidedeploy.spec` and build again.
 | macOS    | `dist/CardiomyocytesApp.app`                          |
 
 The build settings live in `[tool.pyside6.deploy]` in `pyproject.toml`,
-and `main.py` in the project root is the build entry point.
+and the build starts from `main.py` in the project root, as a run from
+the checkout does.
 `--no-install` keeps pyside6-deploy from calling `pip`, which a uv
 environment lacks; Nuitka comes from the `dev` group instead. The first
 run writes `pysidedeploy.spec`, which caches the detected Qt modules:
