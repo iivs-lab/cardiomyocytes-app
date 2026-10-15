@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final
 from PySide6.QtGui import QAction, QActionGroup, QGuiApplication
 from PySide6.QtWidgets import QMainWindow, QWidget
 
+from iivs_cardio_app.metadata import DISPLAY_NAME
 from iivs_cardio_app.shell.appearance import (
     COLOR_SCHEMES,
     apply_color_scheme,
@@ -19,7 +20,6 @@ if TYPE_CHECKING:
 
     from iivs_cardio_app.shell.appearance import ColorScheme
 
-WINDOW_TITLE: Final[str] = "Cardiomyocytes App"
 DEFAULT_SIZE: Final[tuple[int, int]] = (1280, 800)
 COLOR_SCHEME_LABELS: Final[dict[ColorScheme, str]] = {
     "system": "&System",
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
     def __init__(self, settings: QSettings, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._settings = settings
-        self.setWindowTitle(WINDOW_TITLE)
+        self.setWindowTitle(DISPLAY_NAME)
         self.resize(*DEFAULT_SIZE)
         self._create_view_menu()
 

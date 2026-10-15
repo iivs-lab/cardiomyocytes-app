@@ -304,6 +304,14 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   `--noinclude-dlls` arguments in the same commit, or the built
   application fails to import it.
 
+### Application metadata
+
+- `iivs_cardio_app/metadata.py` holds the name, version, and other
+  facts the application shows; `tests/test_metadata.py` checks them
+  against `pyproject.toml`, `LICENSE`, and the build's executable name.
+  Change a value in both places in one commit, such as the version at a
+  release.
+
 ### Qt tests
 
 - GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults
