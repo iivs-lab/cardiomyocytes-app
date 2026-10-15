@@ -37,6 +37,7 @@ GitHub = "https://www.github.com/iivs-lab/cardiomyocytes-app"
 
 [dependency-groups]
 dev = [
+    "nuitka>=4.3",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
     "pytest-qt>=4.5.0",
