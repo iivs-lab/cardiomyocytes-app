@@ -45,6 +45,20 @@ dev = [
     "ty>=0.0.86",
 ]
 
+[tool.pyside6.deploy]
+# Build with `uv run pyside6-deploy --no-install` from the project root. The generated
+# `pysidedeploy.spec` caches the detected Qt modules and plugins; it is not committed.
+title = "CardiomyocytesApp"
+input_file = "main.py"
+exec_directory = "dist"
+mode = "standalone"
+# pyside6-deploy splits this like a shell, so quote an argument holding a space.
+extra_args = """\
+    --quiet --noinclude-qt-translations --assume-yes-for-downloads \
+    '--output-filename=Cardiomyocytes App' --windows-console-mode=attach"""
+# See the following documentation for more information
+# https://doc.qt.io/qtforpython-6/deployment/deployment-pyside6-deploy.html
+
 [tool.ty.environment]
 python-version = "3.14"
 

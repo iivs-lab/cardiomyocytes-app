@@ -287,6 +287,18 @@ answers; run `copier update --UNSAFE` to pull later template changes.
 
 ## Project notes
 
+### Build
+
+- `uv run pyside6-deploy --no-install` builds the application from
+  `[tool.pyside6.deploy]` in `pyproject.toml`; `main.py` in the
+  project root is its entry file, since pyside6-deploy reads
+  `pyproject.toml` only beside the entry file.
+- Do not add a `[tool.pyside6-project]` table to silence the build's
+  "Unable to resolve a valid project file" warning: its `files` takes
+  no directories or globs, so it would have to list every source file,
+  and pyside6-deploy would scan only those for Qt modules (user
+  decision, 2026-10-15).
+
 ### Qt tests
 
 - GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults

@@ -28,6 +28,30 @@ Launch the application from the project root:
 uv run python -m iivs_cardio_app
 ```
 
+Build a standalone folder with pyside6-deploy (Nuitka). It writes
+`dist/CardiomyocytesApp.dist/`, which holds `Cardiomyocytes App.exe` on
+Windows:
+
+```bash
+uv run pyside6-deploy --no-install
+```
+
+Nuitka compiles with MSVC when it is installed. Without it, the first
+build downloads the Zig compiler (about 100 MB) and Dependency Walker
+into Nuitka's user cache (`%LOCALAPPDATA%\Nuitka` on Windows) and reuses
+them afterwards.
+
+The build settings live in `[tool.pyside6.deploy]` in `pyproject.toml`,
+and `main.py` in the project root is the build entry point.
+`--no-install` keeps pyside6-deploy from calling `pip`, which a uv
+environment lacks; Nuitka comes from the `dev` group instead. The first
+run writes `pysidedeploy.spec`, which caches the detected Qt modules:
+delete it after the application starts using a new Qt module.
+
+The build warns `Unable to resolve a valid project file`. It is
+harmless: without a `[tool.pyside6-project]` table, pyside6-deploy
+scans every Python file in the project for the Qt modules it needs.
+
 ## 📋 TODO
 
 See [TODO.md](./TODO.md) for tracked open items.
