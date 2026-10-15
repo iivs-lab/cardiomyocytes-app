@@ -53,11 +53,13 @@ from `uv sync --group dev`.
 
 - **Windows:** install Visual Studio Build Tools with the C++ build
   tools workload; Nuitka uses MSVC whenever it finds it, and its
-  `dumpbin` lets pyside6-deploy detect which Qt plugins the application
-  needs. Without MSVC, the first build downloads the Zig compiler
-  (about 100 MB) and Dependency Walker into `%LOCALAPPDATA%\Nuitka` and
-  reuses them afterwards. Zig is enough for development builds; release
-  builds use MSVC.
+  `dumpbin` lets pyside6-deploy detect which Qt modules and plugins the
+  application needs (see Building below). Without MSVC, the first build
+  downloads the Zig compiler (about 100 MB) into `%LOCALAPPDATA%\Nuitka`
+  and reuses it afterwards. Zig is enough for development builds;
+  release builds use MSVC. On x64, the first build also downloads
+  Dependency Walker there, with or without MSVC, to find the DLLs the
+  application needs.
 
   From PowerShell, winget installs the Build Tools 2026 with that
   workload and the Windows SDK. It asks for administrator approval and
@@ -98,6 +100,24 @@ Run from the project root:
 ```bash
 uv run pyside6-deploy --no-install
 ```
+
+On Windows, run it from a Visual Studio developer shell. pyside6-deploy
+looks for `dumpbin` on `PATH`, where the Build Tools installer does not
+put it. In a plain shell the build only warns `Unable to find dumpbin`
+and skips finding the Qt modules that the imported ones depend on, and
+`pysidedeploy.spec` keeps that shorter list. Developer PowerShell in
+the Start menu opens such a shell; these commands turn the current
+PowerShell into one and stay in the project root:
+
+```powershell
+$vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+& "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+```
+
+On ARM64, pass `arm64` to both options. The shell may first report that
+`vswhere.exe` is not recognized; that is harmless, and
+`Get-Command dumpbin` then shows where it is. After a build without it,
+delete `pysidedeploy.spec` and build again.
 
 | Platform | Output                                                |
 | -------- | ----------------------------------------------------- |
