@@ -8,6 +8,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-_No entries yet._
+### Added
+
+- `PySide6>=6.12.0` as a runtime requirement, for the Qt GUI.
 
 [Unreleased]: https://github.com/iivs-lab/cardiomyocytes-app/commits/main

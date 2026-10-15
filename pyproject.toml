@@ -24,7 +24,9 @@ classifiers = [
     # See https://pypi.org/classifiers/ for more classifiers
 ]
 keywords = []
-dependencies = []
+dependencies = [
+    "pyside6>=6.12.0",
+]
 
 [project.urls]
 GitHub = "https://www.github.com/iivs-lab/cardiomyocytes-app"
