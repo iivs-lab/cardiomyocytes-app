@@ -15,5 +15,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   window.
 - A **View > Theme** menu that switches between the system, light, and
   dark color schemes; the choice is kept for the next launch.
+- **Help > About Cardiomyocytes App**, a window that shows the
+  application's version and license, the Qt version (with Qt's own
+  details a click away), and the licenses of the bundled packages.
 
 [Unreleased]: https://github.com/iivs-lab/cardiomyocytes-app/commits/main

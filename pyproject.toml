@@ -58,13 +58,15 @@ mode = "standalone"
 #   `QtNetwork` only when a bundled OpenSSL folder exists, which the wheels lack.
 # - `platforminputcontexts` holds the Qt Virtual Keyboard (GPLv3 only), which pulls in
 #   Qt Quick and QML; Nuitka leaves the family out by default.
+# - The package data carries `license_data.json`, which the About dialog lists.
 extra_args = """\
     --quiet --noinclude-qt-translations --assume-yes-for-downloads \
     '--output-filename=Cardiomyocytes App' --windows-console-mode=attach \
     --noinclude-qt-plugins=tls,platforminputcontexts \
     --nofollow-import-to=PySide6.QtNetwork \
     --noinclude-dlls=*qpdf.* --noinclude-dlls=*Qt6Pdf.* \
-    --noinclude-dlls=*Qt6Network.*"""
+    --noinclude-dlls=*Qt6Network.* \
+    --include-package-data=iivs_cardio_app"""
 # See the following documentation for more information
 # https://doc.qt.io/qtforpython-6/deployment/deployment-pyside6-deploy.html
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from iivs_cardio_app.shell import MainWindow
+from iivs_cardio_app.shell.about_dialog import AboutDialog
 from iivs_cardio_app.shell.appearance import load_color_scheme, save_color_scheme
 
 
@@ -55,3 +56,27 @@ def test_choosing_a_theme_applies_and_saves_it(qtbot, settings, monkeypatch):
     assert applied == ["dark"]
     assert load_color_scheme(settings) == "dark"
     assert _theme_actions(window)["&Dark"].isChecked()
+
+
+def test_help_menu_holds_only_the_about_entry(qtbot, settings):
+    window = MainWindow(settings)
+    qtbot.addWidget(window)
+
+    menus = [action.text() for action in window.menuBar().actions()]
+    entries = [action.text() for action in _menu(window, "&Help").actions()]
+
+    assert menus == ["&View", "&Help"]
+    assert entries == ["&About Cardiomyocytes App"]
+
+
+def test_about_entry_opens_the_about_dialog(qtbot, settings):
+    window = MainWindow(settings)
+    qtbot.addWidget(window)
+    window.show()
+
+    _menu(window, "&Help").actions()[0].trigger()
+    dialog = window.findChild(AboutDialog)
+
+    assert dialog is not None
+    assert dialog.isVisible()
+    dialog.close()

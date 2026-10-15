@@ -4,10 +4,12 @@ __all__ = ("MainWindow",)
 
 from typing import TYPE_CHECKING, Final
 
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QActionGroup, QGuiApplication
 from PySide6.QtWidgets import QMainWindow, QWidget
 
 from iivs_cardio_app.metadata import DISPLAY_NAME
+from iivs_cardio_app.shell.about_dialog import AboutDialog
 from iivs_cardio_app.shell.appearance import (
     COLOR_SCHEMES,
     apply_color_scheme,
@@ -43,6 +45,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(DISPLAY_NAME)
         self.resize(*DEFAULT_SIZE)
         self._create_view_menu()
+        self._create_help_menu()
 
     def _create_view_menu(self) -> None:
         theme_menu = self.menuBar().addMenu("&View").addMenu("&Theme")
@@ -61,3 +64,16 @@ class MainWindow(QMainWindow):
     def _set_color_scheme(self, scheme: ColorScheme) -> None:
         apply_color_scheme(QGuiApplication.styleHints(), scheme)
         save_color_scheme(self._settings, scheme)
+
+    def _create_help_menu(self) -> None:
+        about_action = QAction(f"&About {DISPLAY_NAME}", self)
+        about_action.setMenuRole(QAction.MenuRole.AboutRole)
+        about_action.triggered.connect(
+            lambda _checked=False: self._show_about_dialog(),
+        )
+        self.menuBar().addMenu("&Help").addAction(about_action)
+
+    def _show_about_dialog(self) -> None:
+        dialog = AboutDialog(self)
+        dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        dialog.open()
