@@ -53,13 +53,16 @@ input_file = "main.py"
 exec_directory = "dist"
 mode = "standalone"
 # pyside6-deploy splits this like a shell, so quote an argument holding a space.
-# The last three lines drop Qt Network and Qt PDF, which the application does not use:
-# the `tls` and `qpdf` plugins pull in their DLLs, and `PySide6/__init__.py` imports
-# `QtNetwork` only when a bundled OpenSSL folder exists, which the wheels lack.
+# - Qt Network and Qt PDF are left out, which the application does not use: the `tls`
+#   and `qpdf` plugins pull in their DLLs, and `PySide6/__init__.py` imports
+#   `QtNetwork` only when a bundled OpenSSL folder exists, which the wheels lack.
+# - `platforminputcontexts` holds the Qt Virtual Keyboard (GPLv3 only), which pulls in
+#   Qt Quick and QML; Nuitka leaves the family out by default.
 extra_args = """\
     --quiet --noinclude-qt-translations --assume-yes-for-downloads \
     '--output-filename=Cardiomyocytes App' --windows-console-mode=attach \
-    --noinclude-qt-plugins=tls --nofollow-import-to=PySide6.QtNetwork \
+    --noinclude-qt-plugins=tls,platforminputcontexts \
+    --nofollow-import-to=PySide6.QtNetwork \
     --noinclude-dlls=*qpdf.* --noinclude-dlls=*Qt6Pdf.* \
     --noinclude-dlls=*Qt6Network.*"""
 # See the following documentation for more information
