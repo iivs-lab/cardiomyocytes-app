@@ -303,24 +303,13 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   matching `--noinclude-qt-plugins`, `--nofollow-import-to`, and
   `--noinclude-dlls` arguments in the same commit, or the built
   application fails to import it.
-- The About dialog lists licenses from
-  `iivs_cardio_app/license_data.json`, never from the installed
-  metadata at run time: reading metadata through Nuitka's
-  `--include-distribution-metadata` crashed the built application
-  (2026-10-15). After changing a runtime dependency, run
-  `uv run python -m iivs_cardio_app.licenses` and commit the file;
-  `tests/test_licenses.py` fails while it is stale.
+- The built application must not read installed distribution metadata
+  (licenses, versions): reading it through Nuitka's
+  `--include-distribution-metadata` crashed the build (2026-10-15).
+  Ship such facts as a data file generated before the build.
 - Build a test program with `--windows-console-mode=attach`, as the
   application does: with Nuitka's default (`force`), standalone builds
   here crash at startup, even a hello world.
-
-### Application metadata
-
-- `iivs_cardio_app/metadata.py` holds the name, version, and other
-  facts the application shows; `tests/test_metadata.py` checks them
-  against `pyproject.toml`, `LICENSE`, and the build's executable name.
-  Change a value in both places in one commit, such as the version at a
-  release.
 
 ### Qt tests
 

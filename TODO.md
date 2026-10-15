@@ -5,4 +5,6 @@ known limitation. Delete an item in the commit that resolves it.
 
 ## Open
 
-_No entries yet._
+- Show the licenses of the dependencies the application uses.
+- Add the color scheme choice (system, light, dark) to the
+  application's global settings.
