@@ -14,5 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `qtawesome>=1.4.2` as a runtime requirement, for icon fonts.
 - `python main.py` in the project root, which opens the application's
   launcher window.
+- The application icon, a heart with a microscope, on the application's
+  windows and on the built executable.
 
 [Unreleased]: https://github.com/iivs-lab/cardiomyocytes-app/commits/main

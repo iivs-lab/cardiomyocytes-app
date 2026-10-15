@@ -330,6 +330,28 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   (`docs/decisions/0002-*.md`). A later front end that needs its own
   command gets one in its package, such as `cli/__main__.py`.
 
+### Assets and scripts
+
+- A data file the application reads goes in an `assets/` folder beside
+  the package that reads it: `gui/assets/`,
+  `features/<name>/gui/assets/`, or `common/gui/assets/`. An `assets/`
+  folder holds no code and no `__init__.py`. Code finds it with
+  `importlib.resources.files(__package__) / "assets"` (and
+  `importlib.resources.as_file` where an API wants a path); the build
+  carries it through `--include-package-data=iivs_cardio_app`
+  (`docs/decisions/0003-*.md`).
+- `scripts/` holds development scripts that generate or check data
+  files. They run in the project environment,
+  `uv run python scripts/<name>.py`, and import nothing from
+  `iivs_cardio_app`. Overriding the template rule above, they carry no
+  PEP 723 metadata: what they import is a project dependency (user
+  decision, 2026-10-16). `tests/scripts/` tests them, loading each from
+  its file through a fixture in its `conftest.py`.
+- `scripts/create_icon.py` builds `iivs_cardio_app/gui/assets/icon.ico`
+  from stacked qtawesome glyphs (`docs/decisions/0005-*.md`). Change
+  the icon there, rerun the script, and commit the ICO; never edit the
+  ICO by hand.
+
 ### Qt tests
 
 - GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults

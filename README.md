@@ -137,6 +137,18 @@ The build warns `Unable to resolve a valid project file`. It is
 harmless: without a `[tool.pyside6-project]` table, pyside6-deploy
 scans every Python file in the project for the Qt modules it needs.
 
+### Assets
+
+Files that are not code live in an `assets/` folder beside the code
+that reads them, such as `iivs_cardio_app/gui/assets/` for the GUI;
+the build carries them as package data. The application icon there,
+`icon.ico`, is generated; after changing the icon in the script, rerun
+it:
+
+```bash
+uv run python scripts/create_icon.py
+```
+
 ## 📋 TODO
 
 See [TODO.md](./TODO.md) for tracked open items.
