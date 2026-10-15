@@ -22,7 +22,11 @@ uv sync --group dev
 
 ## 🚀 Usage
 
-_Show how to run the project: its commands, scripts, or entry points._
+Launch the application from the project root:
+
+```bash
+uv run python -m iivs_cardio_app
+```
 
 ## 📋 TODO
 

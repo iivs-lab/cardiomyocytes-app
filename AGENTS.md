@@ -284,3 +284,12 @@ answers; run `copier update --UNSAFE` to pull later template changes.
 ---
 
 <!-- Add project-specific guidance below. -->
+
+## Project notes
+
+### Qt tests
+
+- GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults
+  `QT_QPA_PLATFORM` to `offscreen`, so they run without a display.
+- CI installs the Qt system libraries on Linux in `ci.yml`; keep that
+  step when `copier update` touches the workflow.
