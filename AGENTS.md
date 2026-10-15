@@ -287,29 +287,8 @@ answers; run `copier update --UNSAFE` to pull later template changes.
 
 ## Project notes
 
-### Build
-
-- `uv run pyside6-deploy --no-install` builds the application from
-  `[tool.pyside6.deploy]` in `pyproject.toml`; pyside6-deploy reads
-  that table only from the `pyproject.toml` beside its entry file,
-  which is why `main.py` stays in the project root.
-- Do not add a `[tool.pyside6-project]` table to silence the build's
-  "Unable to resolve a valid project file" warning: its `files` takes
-  no directories or globs, so it would have to list every source file,
-  and pyside6-deploy would scan only those for Qt modules (user
-  decision, 2026-10-15).
-- The build leaves out Qt Network and Qt PDF (`extra_args` in
-  `[tool.pyside6.deploy]`). Code that starts using either must drop the
-  matching `--noinclude-qt-plugins`, `--nofollow-import-to`, and
-  `--noinclude-dlls` arguments in the same commit, or the built
-  application fails to import it.
-- The built application must not read installed distribution metadata
-  (licenses, versions): reading it through Nuitka's
-  `--include-distribution-metadata` crashed the build (2026-10-15).
-  Ship such facts as a data file generated before the build.
-- Build a test program with `--windows-console-mode=attach`, as the
-  application does: with Nuitka's default (`force`), standalone builds
-  here crash at startup, even a hello world.
+Design decisions and their reasons are in `docs/decisions/`; the notes
+below are the rules that follow from them.
 
 ### Package layout
 
@@ -329,6 +308,10 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   `if __name__ == "__main__":` block, which would run the module twice
   (`docs/decisions/0002-*.md`). A later front end that needs its own
   command gets one in its package, such as `cli/__main__.py`.
+- The GUI opens a launcher, and each sub-app opens in its own window,
+  at most one per process. Values pass between sub-apps only through
+  the GUI front end, typed by `common/core/` (planned;
+  `docs/decisions/0004-*.md`).
 
 ### Assets and scripts
 
@@ -352,9 +335,48 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   the icon there, rerun the script, and commit the ICO; never edit the
   ICO by hand.
 
+### Build
+
+- `uv run pyside6-deploy --no-install` builds the application from
+  `[tool.pyside6.deploy]` in `pyproject.toml`; pyside6-deploy reads
+  that table only from the `pyproject.toml` beside its entry file,
+  which is why `main.py` stays in the project root.
+- On Windows, build from a Visual Studio developer shell, as the
+  README's 🏗️ Build shows. pyside6-deploy finds `dumpbin` only on
+  `PATH`; without it the build merely warns and caches an incomplete Qt
+  module list in `pysidedeploy.spec`.
+- Do not add a `[tool.pyside6-project]` table to silence the build's
+  "Unable to resolve a valid project file" warning: its `files` takes
+  no directories or globs, so it would have to list every source file,
+  and pyside6-deploy would scan only those for Qt modules (user
+  decision, 2026-10-15).
+- The build leaves out Qt Network and Qt PDF (`extra_args` in
+  `[tool.pyside6.deploy]`). Code that starts using either must drop the
+  matching `--noinclude-qt-plugins`, `--nofollow-import-to`, and
+  `--noinclude-dlls` arguments in the same commit, or the built
+  application fails to import it.
+- The built application must not read installed distribution metadata
+  (licenses, versions): reading it through Nuitka's
+  `--include-distribution-metadata` crashed the build (2026-10-15).
+  Ship such facts as a data file generated before the build.
+- Build a test program with `--windows-console-mode=attach`, as the
+  application does: with Nuitka's default (`force`), standalone builds
+  here crash at startup, even a hello world.
+
 ### Qt tests
 
 - GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults
   `QT_QPA_PLATFORM` to `offscreen`, so they run without a display.
 - CI installs the Qt system libraries on Linux in `ci.yml`; keep that
   step when `copier update` touches the workflow.
+
+### Reference implementation
+
+- The old application, `../cardiomyocytes-app-old`, is a reference for
+  requirements and domain logic only (what users must be able to do,
+  the beat-detection algorithm, validation, quantification, and their
+  defaults), never for structure, state handling, markers, or file
+  formats. Its latest code is on the remote branch `origin/remake`,
+  which has no local branch: read it with
+  `git -C ../cardiomyocytes-app-old show origin/remake:<path>`, and do
+  not change that repository.

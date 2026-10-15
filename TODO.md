@@ -5,11 +5,22 @@ known limitation. Delete an item in the commit that resolves it.
 
 ## Open
 
+- `iivs_cardio_app/`: add `common/` and `features/` with the first
+  sub-app, the launcher's sub-app buttons, a window per sub-app, and
+  the messaging between them through the GUI front end
+  (`docs/decisions/0001-*.md`, `0004-*.md`); add tests that check the
+  import rules of decision 0001 by reading the imports.
+- `gui/`: show a splash image from `gui/assets/` while the application
+  starts.
 - Show the licenses of the dependencies the application uses,
   Font Awesome Free (CC BY 4.0) included, since the icon is built from
   its glyphs.
 - Add the color scheme choice (system, light, dark) to the
   application's global settings.
+- Once result files and settings are saved: notice before saving a
+  result that another process changed the file since it was read, and
+  write settings atomically, since several application processes may
+  run at once (`docs/decisions/0004-*.md`).
 
 ### Give each operating system its own icon format
 

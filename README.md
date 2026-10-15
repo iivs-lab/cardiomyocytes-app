@@ -30,6 +30,16 @@ uv run python main.py
 
 To build a standalone application instead, see 🏗️ Build below.
 
+## 🗂️ Layout
+
+- `main.py`: the entry point, for a run from the checkout and for the
+  build.
+- `iivs_cardio_app/`: the application; `gui/` is its PySide6 front end.
+- `scripts/`: development scripts that generate data files, such as
+  the application icon.
+- `tests/`: the tests, laid out like the code they test.
+- `docs/decisions/`: the design decisions and their reasons.
+
 ## 🏗️ Build
 
 pyside6-deploy compiles the application with Nuitka into a folder that
