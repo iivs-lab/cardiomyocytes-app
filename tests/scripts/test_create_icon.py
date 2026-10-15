@@ -6,6 +6,8 @@ import pytest
 from PySide6.QtCore import QBuffer, QByteArray, QIODevice
 from PySide6.QtGui import QImageReader
 
+from tests.marks import windows_glyph_rendering
+
 
 @pytest.mark.parametrize("size", (16, 48, 256))
 def test_icon_is_exactly_the_size_with_transparent_corners(qtbot, create_icon, size):
@@ -29,6 +31,7 @@ def _opaque_span(image, *, horizontal):
     return filled[0], filled[-1]
 
 
+@windows_glyph_rendering
 @pytest.mark.parametrize("size", (16, 20, 32, 64, 256))
 def test_icon_fills_the_canvas_but_its_margin(qtbot, create_icon, size):
     image = create_icon.render_icon(size)
@@ -42,6 +45,7 @@ def test_icon_fills_the_canvas_but_its_margin(qtbot, create_icon, size):
     assert right - left + 1 >= size - 2 * margin - 1
 
 
+@windows_glyph_rendering
 @pytest.mark.parametrize("size", (16, 24, 40, 64, 256))
 def test_icon_sits_halfway_between_edge_and_mass_centering(qtbot, create_icon, size):
     image = create_icon.render_icon(size)
@@ -55,8 +59,7 @@ def test_icon_sits_halfway_between_edge_and_mass_centering(qtbot, create_icon, s
     middle = (top + bottom + 1) / 2
     anchor = middle + create_icon.OPTICAL_WEIGHT * (moment / total - middle)
 
-    # Glyphs snap to the pixel grid differently under each platform's rasterizer.
-    assert abs(anchor - size / 2) <= 1
+    assert abs(anchor - size / 2) <= 0.5
     assert moment / total < middle
 
 

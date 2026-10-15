@@ -333,7 +333,9 @@ below are the rules that follow from them.
 - `scripts/create_icon.py` builds `iivs_cardio_app/gui/assets/icon.ico`
   from stacked qtawesome glyphs (`docs/decisions/0005-*.md`). Change
   the icon there, rerun the script, and commit the ICO; never edit the
-  ICO by hand.
+  ICO by hand. Generate it on Windows: the fit depends on how glyphs
+  snap to pixels, which differs on Linux, so its pixel-fit tests run on
+  Windows only (`windows_glyph_rendering` in `tests/marks.py`).
 
 ### Build
 
