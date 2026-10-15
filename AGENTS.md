@@ -298,6 +298,11 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   no directories or globs, so it would have to list every source file,
   and pyside6-deploy would scan only those for Qt modules (user
   decision, 2026-10-15).
+- The build leaves out Qt Network and Qt PDF (`extra_args` in
+  `[tool.pyside6.deploy]`). Code that starts using either must drop the
+  matching `--noinclude-qt-plugins`, `--nofollow-import-to`, and
+  `--noinclude-dlls` arguments in the same commit, or the built
+  application fails to import it.
 
 ### Qt tests
 
