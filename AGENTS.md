@@ -311,6 +311,19 @@ answers; run `copier update --UNSAFE` to pull later template changes.
   application does: with Nuitka's default (`force`), standalone builds
   here crash at startup, even a hello world.
 
+### Package layout
+
+- One package per front end, named for its kind: `gui/` is the
+  PySide6 application, and a later CLI or web front end goes beside it
+  as `cli/` or `web/`. Sub-apps live in `features/<name>/` and shared
+  code in `common/`, both split into `core/` (no Qt) and `gui/` (later
+  `cli/`). See `docs/decisions/0001-*.md` for the dependency rules
+  between them: no Qt in `core/`, imports run from a front end to
+  `features/` to `common/`, and sub-apps never import each other.
+- `gui/bootstrap.py` assembles and runs the application in `main()`,
+  and `gui/launcher.py` is the launcher window and nothing more.
+  `gui/__init__.py` exports `main` alone.
+
 ### Qt tests
 
 - GUI tests use `pytest-qt` (`qtbot`). `tests/conftest.py` defaults

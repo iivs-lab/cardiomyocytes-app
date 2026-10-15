@@ -6,11 +6,11 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
-from iivs_cardio_app.shell.main_window import MainWindow
+from iivs_cardio_app.gui.launcher import LauncherWindow
 
 
 def main() -> int:
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = LauncherWindow()
     window.show()
     return app.exec()

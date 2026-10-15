@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ("MainWindow",)
+__all__ = ("LauncherWindow",)
 
 from typing import Final
 
@@ -10,7 +10,7 @@ WINDOW_TITLE: Final[str] = "Cardiomyocytes App"
 DEFAULT_SIZE: Final[tuple[int, int]] = (1280, 800)
 
 
-class MainWindow(QMainWindow):
+class LauncherWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle(WINDOW_TITLE)
