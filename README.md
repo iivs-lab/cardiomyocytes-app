@@ -51,13 +51,29 @@ for every machine that runs the built application too. The compiler
 floors are Nuitka's for Python 3.14. Python and Nuitka themselves come
 from `uv sync --group dev`.
 
-- **Windows:** install Visual Studio Build Tools with the "Desktop
-  development with C++" workload; Nuitka uses MSVC whenever it finds it,
-  and its `dumpbin` lets pyside6-deploy detect which Qt plugins the
-  application needs. Without MSVC, the first build downloads the Zig
-  compiler (about 100 MB) and Dependency Walker into
-  `%LOCALAPPDATA%\Nuitka` and reuses them afterwards. Zig is enough for
-  development builds; release builds use MSVC.
+- **Windows:** install Visual Studio Build Tools with the C++ build
+  tools workload; Nuitka uses MSVC whenever it finds it, and its
+  `dumpbin` lets pyside6-deploy detect which Qt plugins the application
+  needs. Without MSVC, the first build downloads the Zig compiler
+  (about 100 MB) and Dependency Walker into `%LOCALAPPDATA%\Nuitka` and
+  reuses them afterwards. Zig is enough for development builds; release
+  builds use MSVC.
+
+  From PowerShell, winget installs the Build Tools 2026 with that
+  workload and the Windows SDK. It asks for administrator approval and
+  downloads several GB; for the 2022 release, use the id
+  `Microsoft.VisualStudio.2022.BuildTools` instead:
+
+  ```powershell
+  winget install --id Microsoft.VisualStudio.BuildTools --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+  ```
+
+  The installation path printed by this command confirms that MSVC is
+  in place:
+
+  ```powershell
+  & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+  ```
 - **Linux (Debian or Ubuntu):** glibc 2.34 means Ubuntu 22.04 or later
   on x86_64, and glibc 2.39 means Ubuntu 24.04 or later on aarch64.
   Nuitka refuses patchelf 0.18.0, a buggy release, unless it comes from
