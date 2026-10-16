@@ -10,11 +10,12 @@ known limitation. Delete an item in the commit that resolves it.
   the messaging between them through the GUI front end
   (`docs/decisions/0001-*.md`, `0004-*.md`); add tests that check the
   import rules of decision 0001 by reading the imports.
+- `gui/menu_bar.py`: give the disabled items their features: File >
+  Preferences… (the settings window, `docs/decisions/0006-*.md`), File >
+  Close Window, Window > Launcher (`AppManager.show_launcher()`), and
+  Help > Report an Issue (the project's issue tracker).
 - `gui/`: show a splash image from `gui/assets/` while the application
   starts.
-- Show the licenses of the dependencies the application uses,
-  Font Awesome Free (CC BY 4.0) included, since the icon is built from
-  its glyphs.
 - Add the color scheme choice (system, light, dark) to the
   application's global settings.
 - Once result files and settings are saved: notice before saving a
@@ -36,8 +37,8 @@ Windows one exists:
 
 Supporting macOS and Linux touches four places:
 `scripts/create_icon.py` writes each format (up to 1024 px for
-macOS); `gui/assets/` holds them; `load_app_icon()` in
-`gui/bootstrap.py` picks one per system or keeps reading `icon.ico`,
+macOS); `gui/assets/` holds them; `AppAssets.load()` in
+`gui/app_manager.py` picks one per system or keeps reading `icon.ico`,
 which Qt opens everywhere; and the build sets `icon` per system, since
 `[tool.pyside6.deploy]` holds a single path.
 

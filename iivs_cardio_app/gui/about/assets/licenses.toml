@@ -1,0 +1,30 @@
+# The third-party components the built application ships, listed in Help > About.
+# An entry without `version` takes it from the running library, and one under
+# `bundled` ships inside the entry above it. Each `file` is written by
+# `scripts/fetch_licenses.py`.
+
+[[component]]
+name = "Python"
+license = "PSF-2.0"
+homepage = "https://www.python.org/"
+file = "python.txt"
+
+[[component.bundled]]
+name = "libffi"
+license = "MIT"
+homepage = "https://sourceware.org/libffi/"
+file = "libffi.txt"
+
+[[component]]
+name = "Qt"
+license = "LGPL-3.0-only"
+homepage = "https://www.qt.io/"
+file = "qt.txt"
+note = "Includes Qt for Python (PySide6 and Shiboken6), used under the same license."
+
+[[component]]
+name = "Font Awesome Free"
+version = "5.15.4"
+license = "CC-BY-4.0"
+homepage = "https://fontawesome.com/"
+file = "font-awesome-free.txt"

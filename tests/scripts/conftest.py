@@ -27,6 +27,12 @@ def create_icon(monkeypatch):
 
 
 @pytest.fixture()
+def fetch_licenses(monkeypatch):
+    """The `scripts/fetch_licenses.py` module, loaded from its file."""
+    return _load_script("fetch_licenses", monkeypatch)
+
+
+@pytest.fixture()
 def sync_app_info(monkeypatch):
     """The `scripts/sync_app_info.py` module, loaded from its file."""
     return _load_script("sync_app_info", monkeypatch)

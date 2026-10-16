@@ -6,9 +6,27 @@ from PySide6.QtGui import QAction, QKeySequence
 from iivs_cardio_app.gui.menu_bar import MenuBar
 
 
+class FakeManager:
+    """An `AppManager` stand-in that records what the menu items asked of it."""
+
+    def __init__(self):
+        self.calls = []
+
+    def show_about(self):
+        self.calls.append("show_about")
+
+    def quit(self):
+        self.calls.append("quit")
+
+
 @pytest.fixture()
-def menu_bar(qtbot):
-    menu_bar = MenuBar()
+def manager():
+    return FakeManager()
+
+
+@pytest.fixture()
+def menu_bar(qtbot, manager):
+    menu_bar = MenuBar(manager)
     qtbot.addWidget(menu_bar)
     return menu_bar
 
@@ -42,14 +60,23 @@ def test_menu_bar_holds_the_shared_menus_in_order(menu_bar):
     }
 
 
-def test_every_item_is_disabled_until_its_feature_exists(menu_bar):
+def test_only_items_with_a_feature_are_enabled(menu_bar):
     items = []
     for menu_action in menu_bar.actions():
         items.extend(menu_action.menu().actions())
-    items = [action for action in items if not action.isSeparator()]
+    enabled = [
+        action.text()
+        for action in items
+        if action.isEnabled() and not action.isSeparator()
+    ]
 
-    assert items
-    assert not any(action.isEnabled() for action in items)
+    assert enabled == ["&Quit", "&About Cardiomyocytes App"]
+
+
+def test_about_item_asks_the_manager_for_the_about_window(menu_bar, manager):
+    _action(menu_bar, "&About Cardiomyocytes App").trigger()
+
+    assert manager.calls == ["show_about"]
 
 
 @pytest.mark.parametrize(
@@ -82,3 +109,9 @@ def test_items_carry_their_shortcuts(menu_bar, text, shortcut):
     ]
 
     assert QKeySequence(shortcut).toString() in shortcuts
+
+
+def test_quit_item_asks_the_manager_to_quit(menu_bar, manager):
+    _action(menu_bar, "&Quit").trigger()
+
+    assert manager.calls == ["quit"]

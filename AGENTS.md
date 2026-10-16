@@ -311,10 +311,24 @@ below are the rules that follow from them.
 - The GUI opens a launcher, and each sub-app opens in its own window.
   The launcher, the settings window, the About window (which shows the
   licenses), and each sub-app's window exist at most once per process;
-  asking for an open one brings it to the front. The GUI front end
-  opens and tracks them (`docs/decisions/0006-*.md`). Values pass
-  between sub-apps only through the GUI front end, typed by
-  `common/core/` (planned; `docs/decisions/0004-*.md`).
+  asking for an open one brings it to the front
+  (`docs/decisions/0006-*.md`). Values pass between sub-apps only
+  through the GUI front end, typed by `common/core/` (planned;
+  `docs/decisions/0004-*.md`).
+- `AppManager` in `gui/app_manager.py` opens and tracks these windows,
+  keyed by window class, and holds `AppAssets`, what the whole
+  application shares: its facts (`AppInfo`) and its icon, read from
+  `gui/assets/`. `gui/bootstrap.py` creates one per process and passes
+  it down: a widget takes the manager when it opens other windows, or
+  only the part it uses, such as the About window's `AppInfo`. Never
+  keep a window or an application-wide resource in a module global or
+  a module-level loader, and never create a second manager
+  (`docs/decisions/0008-*.md`).
+- File > Quit calls `AppManager.quit()`, and closing the launcher does
+  the same through `AppManager.close_windows()`: every other window is
+  closed first, the newest first, and the launcher last. A window that
+  must not close yet, such as one with unsaved work, ignores its
+  `QCloseEvent` in `closeEvent`, which stops the quit.
 
 ### Assets and scripts
 
@@ -339,6 +353,17 @@ below are the rules that follow from them.
   ICO by hand. Generate it on Windows: the fit depends on how glyphs
   snap to pixels, which differs on Linux, so its pixel-fit tests run on
   Windows only (`windows_glyph_rendering` in `tests/marks.py`).
+- `iivs_cardio_app/gui/about/assets/licenses.toml` lists what the
+  built application ships, not every installed package, for the About
+  window (`docs/decisions/0007-*.md`); a component shipped inside
+  another, such as a library the Python runtime brings along, is a
+  `[[component.bundled]]` entry under it. When the build starts
+  shipping a component, add its entry; after that, or after upgrading
+  Python or Qt, rerun `scripts/fetch_licenses.py` on Windows and commit
+  the texts it writes. Entries for components that report their own
+  version at run time hold none. Check what a build ships in the DLLs
+  and `.pyd` files of its `dist/` folder: it ships libffi whatever the
+  application's own code imports, since PySide6 loads `ctypes`.
 - `iivs_cardio_app/gui/assets/app.toml` holds the facts the windows
   show about the application, copied by `scripts/sync_app_info.py`:
   the name from `[tool.cardiomyocytes-app]` in `pyproject.toml`, the
@@ -346,8 +371,9 @@ below are the rules that follow from them.
   the copyright line from `LICENSE`. Never edit it by hand: change the
   source, rerun the script, and commit both together, such as the
   version bump at a release. `tests/scripts/test_sync_app_info.py`
-  fails while it is out of date. The package keeps no `__version__`,
-  and code never repeats the facts as constants.
+  fails while it is out of date. The package keeps no `__version__`;
+  code reads the facts from `AppManager.assets.info`, never from
+  constants.
 
 ### Build
 
@@ -373,7 +399,8 @@ below are the rules that follow from them.
   `_ssl`, and `_hashlib`), which only the standard library's network
   modules would load; `hashlib` falls back to its built-in algorithms.
   Never import `ssl` or `_hashlib`. Code that comes to need TLS drops
-  those arguments in the same commit.
+  those arguments and adds OpenSSL back to `licenses.toml` under Python
+  in the same commit (`docs/decisions/0007-*.md`).
 - The built application must not read installed distribution metadata
   (licenses, versions): reading it through Nuitka's
   `--include-distribution-metadata` crashed the build (2026-10-15).
@@ -381,6 +408,53 @@ below are the rules that follow from them.
 - Build a test program with `--windows-console-mode=attach`, as the
   application does: with Nuitka's default (`force`), standalone builds
   here crash at startup, even a hello world.
+
+### Qt widget classes
+
+The style merges the old application's construction pattern with this
+project's rules (user decision, 2026-10-16). `gui/about/` shows it.
+
+- `__init__` takes the class's own arguments, then
+  `parent: QWidget | None = None`. It calls `super().__init__(parent)`,
+  configures the widget itself (title, size, attributes), stores what
+  later methods need, then calls `self._setup_ui()` and, when the class
+  has connections, `self._connect_signals()`. State that should run
+  through a slot, such as an initial selection, is set after them. No
+  base class enforces the two methods, and no method annotates
+  `self: Self`.
+- A constructor never shows its widget: whoever opens a window shows
+  it.
+- `_setup_ui()` creates the children and lays them out. A part worth a
+  name goes into a `_create_<part>()` helper that returns its widget or
+  layout.
+- A child that a later method uses is a private attribute
+  (`self._list`); one only `_setup_ui()` touches stays a local. Never
+  expose a child: callers get a method, a property, or a `Signal`.
+- A child widget or action takes its parent as `parent=self`. A layout
+  takes its widget positionally (`QVBoxLayout(self)`), since `parent=`
+  leaves the layout uninstalled, and an item (`QTreeWidgetItem`) takes
+  its parent positionally, since PySide6 accepts no keyword for it.
+- `_connect_signals()` makes every connection the class owns. Connect
+  to an existing method when it does the job (`self.close`); otherwise
+  to a handler `_on_<what>_<event>` (`_on_component_changed`)
+  decorated with `@Slot(...)` naming the argument types it takes. No
+  lambdas: a connection made per data item as the item is created binds
+  its argument with `functools.partial`, as `MenuBar` does for each
+  `ItemSpec`. A lambda held as data, such as an `ItemSpec`'s `trigger`,
+  is fine. PySide6 drops the signal arguments a callable cannot take,
+  so no handler needs a dummy one (`_checked=False`).
+- A signal the class emits is a class-level `Signal`, named for what
+  happened (`component_selected`).
+- The class body follows the order construction runs: the docstring,
+  signals and class attributes, `__init__`, public methods and
+  properties, `_setup_ui()` and its `_create_*` helpers,
+  `_connect_signals()`, the slots in the order they are connected, then
+  overridden event handlers (`closeEvent`, with `@override`).
+- Defaults are module-level `Final` constants (`DEFAULT_SIZE`), not
+  class attributes. A top-level window sets its opening size and the
+  size it shrinks to, `resize(*DEFAULT_SIZE)` and
+  `setMinimumSize(*MINIMUM_SIZE)`, as the launcher and the About
+  window do.
 
 ### Qt tests
 
