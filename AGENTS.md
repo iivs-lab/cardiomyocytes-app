@@ -308,10 +308,13 @@ below are the rules that follow from them.
   `if __name__ == "__main__":` block, which would run the module twice
   (`docs/decisions/0002-*.md`). A later front end that needs its own
   command gets one in its package, such as `cli/__main__.py`.
-- The GUI opens a launcher, and each sub-app opens in its own window,
-  at most one per process. Values pass between sub-apps only through
-  the GUI front end, typed by `common/core/` (planned;
-  `docs/decisions/0004-*.md`).
+- The GUI opens a launcher, and each sub-app opens in its own window.
+  The launcher, the settings window, the About window (which shows the
+  licenses), and each sub-app's window exist at most once per process;
+  asking for an open one brings it to the front. The GUI front end
+  opens and tracks them (`docs/decisions/0006-*.md`). Values pass
+  between sub-apps only through the GUI front end, typed by
+  `common/core/` (planned; `docs/decisions/0004-*.md`).
 
 ### Assets and scripts
 
