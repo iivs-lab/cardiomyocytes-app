@@ -16,5 +16,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   launcher window.
 - The application icon, a heart with a microscope, on the application's
   windows and on the built executable.
+- A menu bar with **File**, **Window**, and **Help** menus on the
+  launcher; their items show disabled until their features exist.
 
 [Unreleased]: https://github.com/iivs-lab/cardiomyocytes-app/commits/main
