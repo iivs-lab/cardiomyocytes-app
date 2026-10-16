@@ -58,7 +58,8 @@ exec_directory = "dist"
 mode = "standalone"
 icon = "iivs_cardio_app/gui/assets/icon.ico"
 # Split like a shell, so quote an argument holding a space. Leaves out the unused
-# Qt Network, Qt PDF, and Qt Virtual Keyboard (`platforminputcontexts`, GPLv3 only).
+# Qt Network, Qt PDF, and Qt Virtual Keyboard (`platforminputcontexts`, GPLv3 only),
+# and OpenSSL, which only the standard library's network modules would load.
 extra_args = """\
     --quiet --noinclude-qt-translations --assume-yes-for-downloads \
     '--output-filename=Cardiomyocytes App' --windows-console-mode=attach \
@@ -66,6 +67,8 @@ extra_args = """\
     --nofollow-import-to=PySide6.QtNetwork \
     --noinclude-dlls=*qpdf.* --noinclude-dlls=*Qt6Pdf.* \
     --noinclude-dlls=*Qt6Network.* \
+    --nofollow-import-to=ssl --nofollow-import-to=_ssl \
+    --nofollow-import-to=_hashlib \
     --include-package-data=iivs_cardio_app"""
 # See the following documentation for more information
 # https://doc.qt.io/qtforpython-6/deployment/deployment-pyside6-deploy.html

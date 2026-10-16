@@ -369,6 +369,11 @@ below are the rules that follow from them.
   matching `--noinclude-qt-plugins`, `--nofollow-import-to`, and
   `--noinclude-dlls` arguments in the same commit, or the built
   application fails to import it.
+- The build also leaves out OpenSSL (`--nofollow-import-to` for `ssl`,
+  `_ssl`, and `_hashlib`), which only the standard library's network
+  modules would load; `hashlib` falls back to its built-in algorithms.
+  Never import `ssl` or `_hashlib`. Code that comes to need TLS drops
+  those arguments in the same commit.
 - The built application must not read installed distribution metadata
   (licenses, versions): reading it through Nuitka's
   `--include-distribution-metadata` crashed the build (2026-10-15).
