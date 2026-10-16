@@ -339,6 +339,15 @@ below are the rules that follow from them.
   ICO by hand. Generate it on Windows: the fit depends on how glyphs
   snap to pixels, which differs on Linux, so its pixel-fit tests run on
   Windows only (`windows_glyph_rendering` in `tests/marks.py`).
+- `iivs_cardio_app/gui/assets/app.toml` holds the facts the windows
+  show about the application, copied by `scripts/sync_app_info.py`:
+  the name from `[tool.cardiomyocytes-app]` in `pyproject.toml`, the
+  version, description, license, and homepage from `[project]`, and
+  the copyright line from `LICENSE`. Never edit it by hand: change the
+  source, rerun the script, and commit both together, such as the
+  version bump at a release. `tests/scripts/test_sync_app_info.py`
+  fails while it is out of date. The package keeps no `__version__`,
+  and code never repeats the facts as constants.
 
 ### Build
 

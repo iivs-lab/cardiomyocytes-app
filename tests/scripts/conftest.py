@@ -24,3 +24,9 @@ def _load_script(name, monkeypatch):
 def create_icon(monkeypatch):
     """The `scripts/create_icon.py` module, loaded from its file."""
     return _load_script("create_icon", monkeypatch)
+
+
+@pytest.fixture()
+def sync_app_info(monkeypatch):
+    """The `scripts/sync_app_info.py` module, loaded from its file."""
+    return _load_script("sync_app_info", monkeypatch)

@@ -1,0 +1,9 @@
+# Facts about the application that its windows show, copied from `pyproject.toml`
+# and `LICENSE` by `scripts/sync_app_info.py`. Edit those and rerun the script;
+# `tests/scripts/test_sync_app_info.py` fails while this file is out of date.
+name = "Cardiomyocytes App"
+version = "0.1.0"
+description = "A GUI application for cardiomyocyte analysis"
+copyright = "Copyright (c) 2026 Jaewoo Park"
+license = "MIT"
+homepage = "https://www.github.com/iivs-lab/cardiomyocytes-app"

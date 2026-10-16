@@ -46,6 +46,11 @@ dev = [
     "ty>=0.0.86",
 ]
 
+[tool.cardiomyocytes-app]
+# The name users see, such as in window titles. `scripts/sync_app_info.py` copies
+# it, with the version and the other facts above, into the application's data.
+name = "Cardiomyocytes App"
+
 [tool.pyside6.deploy]
 title = "CardiomyocytesApp"
 input_file = "main.py"

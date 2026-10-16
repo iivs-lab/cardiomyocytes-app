@@ -36,7 +36,7 @@ To build a standalone application instead, see 🏗️ Build below.
   build.
 - `iivs_cardio_app/`: the application; `gui/` is its PySide6 front end.
 - `scripts/`: development scripts that generate data files, such as
-  the application icon.
+  the application icon and its facts.
 - `tests/`: the tests, laid out like the code they test.
 - `docs/decisions/`: the design decisions and their reasons.
 
@@ -157,6 +157,14 @@ it:
 
 ```bash
 uv run python scripts/create_icon.py
+```
+
+The application's facts (its name, version, and license), in `app.toml`
+beside the icon, are copied from `pyproject.toml` and `LICENSE`. Rerun
+the script after changing either, such as the version at a release:
+
+```bash
+uv run python scripts/sync_app_info.py
 ```
 
 ## 📋 TODO
